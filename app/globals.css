@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0a0a;
+  --color-ink-2: #111111;
+  --color-ink-3: #181715;
+  --color-cream: #f5f1e8;
+  --color-mute: #b8b0a0;
+  --color-gold-1: #e8c36a;
+  --color-gold-2: #c9a24a;
+  --color-gold-3: #8c6a2a;
+  --font-serif: var(--font-cormorant), "Times New Roman", serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+}
+
+:root {
+  --gold: linear-gradient(120deg, #e8c36a 0%, #c9a24a 48%, #8c6a2a 100%);
+  --gold-soft: linear-gradient(120deg, rgba(232, 195, 106, 0.9), rgba(140, 106, 42, 0.6));
+}
+
+html {
+  background: var(--color-ink);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #c9a24a;
+  color: #0a0a0a;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* grain fixo por cima de tudo */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@layer components {
+  .text-gold {
+    background: var(--gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* o SplitText embrulha as palavras em divs: o gradiente precisa descer até elas */
+  .text-gold div {
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c9a24a 20%, #e8c36a 50%, #8c6a2a 80%, transparent);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-gold-1);
+  }
+
+  .glow {
+    pointer-events: none;
+    position: absolute;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, rgba(201, 162, 74, 0.22), rgba(201, 162, 74, 0.06) 55%, transparent);
+  }
+
+  /* borda dourada fina via máscara (funciona com cantos arredondados) */
+  .gold-border {
+    position: relative;
+  }
+  .gold-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(140deg, rgba(232, 195, 106, 0.7), rgba(140, 106, 42, 0.15) 40%, rgba(140, 106, 42, 0.15) 60%, rgba(232, 195, 106, 0.55));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .btn-gold {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    overflow: hidden;
+    border-radius: 2px;
+    padding: 0.95rem 1.6rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-cream);
+    transition: color 0.3s ease;
+    isolation: isolate;
+  }
+  .btn-gold::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--gold);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  /* reflexo passando no hover */
+  .btn-gold::after {
+    content: "";
+    position: absolute;
+    inset: -2px auto -2px 0;
+    width: 45%;
+    background: linear-gradient(100deg, transparent, rgba(255, 233, 180, 0.55), transparent);
+    transform: translateX(-160%) skewX(-20deg);
+    z-index: -1;
+  }
+  .btn-gold:hover::after,
+  .btn-gold:focus-visible::after {
+    transform: translateX(330%) skewX(-20deg);
+    transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .btn-gold:hover {
+    color: #fff6dc;
+  }
+  .btn-gold.is-solid {
+    background: var(--gold);
+    color: #0a0a0a;
+  }
+  .btn-gold.is-solid::before {
+    display: none;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-gold-1);
+    outline-offset: 3px;
+  }
+
+  .card-glow {
+    --mx: 50%;
+    --my: 50%;
+  }
+  .card-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(320px circle at var(--mx) var(--my), rgba(232, 195, 106, 0.13), transparent 60%);
+    pointer-events: none;
+  }
+  .card-glow:hover::after {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+
+@keyframes scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(22px);
+    opacity: 0;
+  }
+}
+.scroll-dot {
+  animation: scroll-dot 1.8s ease-in-out infinite;
+}
+
+/* esconde o que o GSAP vai revelar, só quando JS e movimento estão ativos */
+.js-motion [data-reveal] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-ring,
+  .scroll-dot {
+    animation: none;
+  }
+  .js-motion [data-reveal] {
+    opacity: 1;
+  }
+}
